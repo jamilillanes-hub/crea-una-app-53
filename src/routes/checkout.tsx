@@ -35,7 +35,7 @@ const schema = z.object({
   point: z.tuple([z.number(), z.number()], { message: "Marca en el mapa dónde recibir tu pedido" }),
 });
 
-type Errors = Partial<Record<"name" | "phone" | "address" | "reference" | "point", string>>;
+type Errors = Partial<Record<"name" | "phone" | "address" | "reference" | "point", string | undefined>>;
 
 function CheckoutPage() {
   const { quote, hydrated, placePurchase } = useStore();
@@ -71,7 +71,10 @@ function CheckoutPage() {
   };
 
   const useMyLocation = () => {
-    if (!navigator.geolocation) return toast.error("Tu navegador no permite compartir la ubicación.");
+    if (!navigator.geolocation) {
+      toast.error("Tu navegador no permite compartir la ubicación.");
+      return;
+    }
     setLocating(true);
     navigator.geolocation.getCurrentPosition(
       (pos) => {
